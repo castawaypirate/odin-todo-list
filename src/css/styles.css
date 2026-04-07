@@ -3,12 +3,23 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 .container {
   display: flex;
 
   svg {
     fill: #606263;
     min-width: 24px;
+  }
+}
+
+#todo-dialog {
+  position: fixed;
+  top: 35%;
+  left: 50%;
+
+  #todo-id {
+    display: none;
   }
 }
 
@@ -28,10 +39,6 @@ button.toggle {
   }
 }
 
-/* button.toggle:hover { */
-/*   cursor: pointer; */
-/* } */
-
 nav {
   flex: none;
   width: 250px;
@@ -46,6 +53,12 @@ nav {
 
     span {
       opacity: 0;
+      pointer-events: none;
+    }
+
+    #nav-project-list {
+      opacity: 0;
+      pointer-events: none;
     }
   }
 
@@ -53,17 +66,26 @@ nav {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.75rem;
 
-    li {
+    .list-item {
       display: flex;
       flex-direction: row;
       gap: 0.5rem;
       align-items: center;
     }
 
-    li:hover {
+    .list-item:hover {
       cursor: pointer;
+    }
+
+    #nav-project-list {
+      margin-top: 0.5rem;
+      transition: opacity 0.2s ease-out;
+
+      &:hover {
+        cursor: pointer;
+      }
     }
 
     span {
@@ -74,4 +96,25 @@ nav {
 }
 
 #content {
+  padding: 1rem;
+
+  .main-project-list {
+    list-style: none;
+  }
+}
+
+#project-dialog {
+  position: fixed;
+  top: 35%;
+  left: 50%;
+
+  #project-id {
+    display: none;
+  }
+}
+
+#add-project {
+  &:hover {
+    cursor: pointer;
+  }
 }
