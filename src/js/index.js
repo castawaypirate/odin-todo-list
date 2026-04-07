@@ -1,3 +1,7 @@
 import "../css/styles.css";
 
-console.log("test");
+document
+  .querySelector(".toggle")
+  .addEventListener("click", function toggleNav() {
+    document.querySelector("#sidebar").classList.toggle("min");
+  });
