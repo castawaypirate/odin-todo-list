@@ -42,7 +42,7 @@ function updateListOnLocalStorage(list) {
 }
 
 // todo
-function addTodoToProject(todo) {
+function addUpdateTodoToProject(todo) {
   const tempList = getListFromLocalStorage();
 
   const listProjectIndex = tempList.findIndex((x) => x._id === todo.projectId);
@@ -53,7 +53,13 @@ function addTodoToProject(todo) {
     tempList[listProjectIndex]._todos,
   );
 
-  tempProject.addTodo(todo);
+  const todoIndex = tempProject._todos.findIndex((x) => x._id === todo.id);
+
+  if (todoIndex === -1) {
+    tempProject.addTodo(todo);
+  } else {
+    tempProject.updateTodo(todo);
+  }
 
   addProjectToList(tempProject);
   showProjectTodos(tempProject.id);
@@ -96,7 +102,7 @@ document
       formData.get("todo-project"),
     );
 
-    addTodoToProject(newTodo);
+    addUpdateTodoToProject(newTodo);
 
     // if (submitButton.dataset.function === "add") {
 
@@ -115,6 +121,31 @@ document
     // renderTable();
   });
 
+function completeTodo(todo) {
+  const tempList = getListFromLocalStorage();
+  const project = tempList.find((x) => x._id === todo._projectId);
+  const todoIndex = project._todos.findIndex((x) => x._id === todo._id);
+
+  let completed = project._todos[todoIndex]._completed;
+  if (completed) {
+    completed = "";
+  } else {
+    completed = "completed";
+  }
+
+  const tempTodo = new Todo(
+    project._todos[todoIndex]._id,
+    project._todos[todoIndex]._title,
+    project._todos[todoIndex]._description,
+    project._todos[todoIndex]._dueDate,
+    project._todos[todoIndex]._priority,
+    completed,
+    project._todos[todoIndex]._projectId,
+  );
+
+  addUpdateTodoToProject(tempTodo);
+}
+
 function showProjectTodos(projectId) {
   const projectContent = document.createElement("div");
   const tempList = getListFromLocalStorage();
@@ -132,6 +163,9 @@ function showProjectTodos(projectId) {
     if (todo._completed) {
       check.checked = true;
     }
+    check.addEventListener("change", function () {
+      completeTodo(todo);
+    });
     const title = document.createElement("span");
     title.textContent = todo._title;
     upper.appendChild(check);
@@ -162,6 +196,11 @@ function showProjectTodos(projectId) {
           `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m296-224-56-56 240-240 240 240-56 56-184-183-184 183Zm0-240-56-56 240-240 240 240-56 56-184-183-184 183Z"/></svg>`,
         );
       }
+    }
+
+    if (check.checked) {
+      upper.style.textDecoration = "line-through";
+      lower.style.opacity = "0.4";
     }
 
     el.appendChild(upper);

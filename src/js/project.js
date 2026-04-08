@@ -32,4 +32,9 @@ export default class Project {
   addTodo(todo) {
     this._todos.push(todo);
   }
+
+  updateTodo(todo) {
+    let currentIndex = this._todos.findIndex((x) => x._id === todo.id);
+    this._todos[currentIndex] = todo;
+  }
 }

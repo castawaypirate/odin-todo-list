@@ -2,4 +2,8 @@ show/hide completed todos
 sort by priority
 sort by date
 delete todo
-show/edit details of todo
+delete project
+show/edit project details
+show/edit todo details
+
+complete todo
