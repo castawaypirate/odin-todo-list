@@ -3,18 +3,23 @@ import Todo from "./todo.js";
 import Project from "./project.js";
 
 // project list and default project init
-function initView() {
+async function initView() {
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href =
+    "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&apm;icon_names=keyboard_double_arrow_up,keyboard_double_arrow_down,horizontal_rule";
+  document.head.append(link);
+  await document.fonts.ready;
+
   let tempList = getListFromLocalStorage();
+  const defaultProjectId = "47becbd0-3a1c-4ab4-80f6-bbc81a2e2d24";
   if (!tempList) {
-    const defaultProject = new Project(
-      "47becbd0-3a1c-4ab4-80f6-bbc81a2e2d24",
-      "Default",
-      [],
-    );
+    const defaultProject = new Project(defaultProjectId, "Default", []);
     tempList = [];
     tempList.push(defaultProject);
     updateListOnLocalStorage(tempList);
   }
+  showProjectTodos(defaultProjectId);
   showProjectsNav();
 }
 
@@ -51,6 +56,7 @@ function addTodoToProject(todo) {
   tempProject.addTodo(todo);
 
   addProjectToList(tempProject);
+  showProjectTodos(tempProject.id);
 }
 
 const todoDialog = document.querySelector("#todo-dialog");
@@ -132,14 +138,34 @@ function showProjectTodos(projectId) {
     upper.appendChild(title);
 
     const lower = document.createElement("div");
-    const dueDate = document.createElement("span");
-    dueDate.textContent = todo._dueDate;
-    const priority = document.createElement("span");
-    console.log(todo);
+    if (todo._dueDate) {
+      const dueDate = document.createElement("span");
+      dueDate.textContent = todo._dueDate;
+      lower.appendChild(dueDate);
+    }
 
-    // <span class="material-symbols-outlined">keyboard_double_arrow_down</span>
-    // <span class="material-symbols-outlined">keyboard_double_arrow_up</span>
-    // <span class="material-symbols-outlined">horizontal_rule</span>
+    const todoPriority = todo._priority;
+    if (todoPriority) {
+      if (todoPriority === "low") {
+        lower.insertAdjacentHTML(
+          "beforeend",
+          `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-200 240-440l56-56 184 183 184-183 56 56-240 240Zm0-240L240-680l56-56 184 183 184-183 56 56-240 240Z"/></svg>`,
+        );
+      } else if (todoPriority === "medium") {
+        lower.insertAdjacentHTML(
+          "beforeend",
+          `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M160-440v-80h640v80H160Z"/></svg>`,
+        );
+      } else {
+        lower.insertAdjacentHTML(
+          "beforeend",
+          `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m296-224-56-56 240-240 240 240-56 56-184-183-184 183Zm0-240-56-56 240-240 240 240-56 56-184-183-184 183Z"/></svg>`,
+        );
+      }
+    }
+
+    el.appendChild(upper);
+    el.appendChild(lower);
 
     todoList.appendChild(el);
   }
@@ -180,6 +206,9 @@ function showProjects() {
     const el = document.createElement("li");
     el.textContent = project._title;
     el.dataset.uuid = project._id;
+    el.addEventListener("click", function () {
+      showProjectTodos(project._id);
+    });
     mainProjectList.appendChild(el);
   }
   projectContent.appendChild(mainProjectList);
