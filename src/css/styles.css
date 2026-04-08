@@ -114,6 +114,15 @@ nav {
 }
 
 #add-project {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+
+  span {
+    font-size: 1.5rem;
+  }
+
   &:hover {
     cursor: pointer;
   }

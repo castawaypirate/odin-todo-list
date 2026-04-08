@@ -1,10 +1,11 @@
 export default class Todo {
-  constructor(id, title, description, dueDate, priority, projectId) {
+  constructor(id, title, description, dueDate, priority, completed, projectId) {
     this._id = id;
     this._title = title;
     this._description = description;
     this._dueDate = dueDate;
     this._priority = priority;
+    this._completed = completed;
     this._projectId = projectId;
   }
 
@@ -46,6 +47,14 @@ export default class Todo {
 
   set priority(priority) {
     this._priority = priority;
+  }
+
+  get completed() {
+    return this._completed;
+  }
+
+  set completed(completed) {
+    this._completed = completed;
   }
 
   get projectId() {
