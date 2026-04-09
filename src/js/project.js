@@ -37,4 +37,8 @@ export default class Project {
     let currentIndex = this._todos.findIndex((x) => x._id === todo.id);
     this._todos[currentIndex] = todo;
   }
+
+  findTodo(todoId) {
+    return this._todos.findIndex((x) => x._id === todoId);
+  }
 }

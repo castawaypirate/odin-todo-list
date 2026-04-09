@@ -23,6 +23,16 @@
   }
 }
 
+#project-dialog {
+  position: fixed;
+  top: 35%;
+  left: 50%;
+
+  #project-id {
+    display: none;
+  }
+}
+
 button.toggle {
   width: 24px;
   height: 24px;
@@ -97,25 +107,11 @@ nav {
 
 #content {
   padding: 1rem;
-
-  .main-project-list {
-    list-style: none;
-
-    li {
-      &:hover {
-        cursor: pointer;
-      }
-    }
-  }
 }
 
-#project-dialog {
-  position: fixed;
-  top: 35%;
-  left: 50%;
-
-  #project-id {
-    display: none;
+.todo-title {
+  &:hover {
+    cursor: pointer;
   }
 }
 
@@ -129,6 +125,40 @@ nav {
     font-size: 1.5rem;
   }
 
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.main-project-list {
+  list-style: none;
+
+  li {
+    span:hover {
+      cursor: pointer;
+    }
+
+    svg:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dialog-button {
+  background-color: white;
+  border: none;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+input[type="checkbox"] {
   &:hover {
     cursor: pointer;
   }

@@ -9,6 +9,19 @@
   <body>
     <div class="container">
       <dialog id="todo-dialog">
+        <button class="dialog-button" id="close-todo-dialog">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e3e3e3"
+          >
+            <path
+              d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
+            />
+          </svg>
+        </button>
         <form id="todo-form">
           <input type="text" id="todo-id" name="todo-id" value="" readonly />
           <div class="form-field">
@@ -19,16 +32,17 @@
               name="todo-title"
               value=""
               required
+              autofocus
             />
           </div>
           <div class="form-field">
             <label for="todo-description">Description</label>
-            <input
-              type="text"
+            <textarea
               id="todo-description"
               name="todo-description"
               value=""
-            />
+              rows="3"
+            ></textarea>
           </div>
           <div class="form-field">
             <label for="todo-dueDate">Due Date</label>
@@ -59,15 +73,53 @@
             <select id="todo-project" name="todo-project"></select>
           </div>
         </form>
-        <div class="dialog-buttons">
-          <button type="submit" id="submit-todo" form="todo-form">
-            Submit
-          </button>
-          <button id="close-todo-dialog">Close</button>
-        </div>
+        <button
+          class="dialog-button"
+          type="submit"
+          id="submit-todo"
+          form="todo-form"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e3e3e3"
+          >
+            <path
+              d="M840-680v480q0 33-23.5 56.5T760-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h480l160 160Zm-80 34L646-760H200v560h560v-446ZM565-275q35-35 35-85t-35-85q-35-35-85-35t-85 35q-35 35-35 85t35 85q35 35 85 35t85-35ZM240-560h360v-160H240v160Zm-40-86v446-560 114Z"
+            />
+          </svg>
+        </button>
+        <button class="dialog-button" type="button" id="delete-todo">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e3e3e3"
+          >
+            <path
+              d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"
+            />
+          </svg>
+        </button>
       </dialog>
 
       <dialog id="project-dialog">
+        <button class="dialog-button" id="close-project-dialog">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e3e3e3"
+          >
+            <path
+              d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
+            />
+          </svg>
+        </button>
         <form id="project-form">
           <input
             type="text"
@@ -84,15 +136,29 @@
               name="project-title"
               value=""
               required
+              autofocus
             />
           </div>
         </form>
-        <div class="dialog-buttons">
-          <button type="submit" id="submit-project" form="project-form">
-            Submit
-          </button>
-          <button id="close-project-dialog">Close</button>
-        </div>
+
+        <button
+          class="dialog-button"
+          type="submit"
+          id="submit-project"
+          form="project-form"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e3e3e3"
+          >
+            <path
+              d="M840-680v480q0 33-23.5 56.5T760-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h480l160 160Zm-80 34L646-760H200v560h560v-446ZM565-275q35-35 35-85t-35-85q-35-35-85-35t-85 35q-35 35-35 85t35 85q35 35 85 35t85-35ZM240-560h360v-160H240v160Zm-40-86v446-560 114Z"
+            />
+          </svg>
+        </button>
       </dialog>
 
       <button class="toggle" type="button">
@@ -142,7 +208,7 @@
               </svg>
               <span>projects</span>
             </div>
-            <ul id="nav-project-list" class="hide"></ul>
+            <ul id="nav-project-list"></ul>
           </li>
         </ul>
       </nav>

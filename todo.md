@@ -1,9 +1,17 @@
+# backlog
+
 show/hide completed todos
 sort by priority
 sort by date
-delete todo
-delete project
+
+styles
+
+
+# done
+complete todo
 show/edit project details
+delete project
+
 show/edit todo details
 
-complete todo
+delete todo
