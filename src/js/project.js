@@ -1,8 +1,8 @@
 export default class Project {
   constructor(id, title, todos) {
-    this._id = id;
-    this._title = title;
-    this._todos = todos;
+    this.id = id;
+    this.title = title;
+    this.todos = todos;
   }
 
   get id() {
@@ -34,11 +34,19 @@ export default class Project {
   }
 
   updateTodo(todo) {
-    let currentIndex = this._todos.findIndex((x) => x._id === todo.id);
+    let currentIndex = this._todos.findIndex((x) => x.id === todo.id);
     this._todos[currentIndex] = todo;
   }
 
   findTodo(todoId) {
-    return this._todos.findIndex((x) => x._id === todoId);
+    return this._todos.findIndex((x) => x.id === todoId);
+  }
+
+  toJSON() {
+    return {
+      id: this.id,
+      title: this.title,
+      todos: this.todos,
+    };
   }
 }

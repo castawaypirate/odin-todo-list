@@ -5,7 +5,7 @@ import {
 
 export function addUpdateProjectToList(project) {
   let tempList = getListFromLocalStorage();
-  const listProjectIndex = tempList.findIndex((x) => x._id === project.id);
+  const listProjectIndex = tempList.findIndex((x) => x.id === project.id);
 
   if (listProjectIndex !== -1) {
     tempList[listProjectIndex] = project;
@@ -18,7 +18,7 @@ export function addUpdateProjectToList(project) {
 
 export function deleteProject(projectId) {
   let tempList = getListFromLocalStorage();
-  const listProjectIndex = tempList.findIndex((x) => x._id === projectId);
+  const listProjectIndex = tempList.findIndex((x) => x.id === projectId);
 
   if (listProjectIndex > -1) {
     tempList.splice(listProjectIndex, 1);

@@ -1,12 +1,22 @@
 export default class Todo {
-  constructor(id, title, description, dueDate, priority, completed, projectId) {
-    this._id = id;
-    this._title = title;
-    this._description = description;
-    this._dueDate = dueDate;
-    this._priority = priority;
-    this._completed = completed;
-    this._projectId = projectId;
+  constructor(
+    id,
+    title,
+    description,
+    dueDate,
+    priority,
+    completed,
+    projectId,
+    createdAt = null,
+  ) {
+    this.id = id;
+    this.title = title;
+    this.description = description;
+    this.dueDate = dueDate;
+    this.priority = priority;
+    this.completed = completed;
+    this.projectId = projectId;
+    this.createdAt = createdAt;
   }
 
   get id() {
@@ -63,5 +73,30 @@ export default class Todo {
 
   set projectId(projectId) {
     this._projectId = projectId;
+  }
+
+  get createdAt() {
+    return this._createdAt;
+  }
+
+  set createdAt(createdAt) {
+    if (createdAt) {
+      this._createdAt = createdAt;
+    } else {
+      this._createdAt = new Date();
+    }
+  }
+
+  toJSON() {
+    return {
+      id: this.id,
+      title: this.title,
+      description: this.description,
+      dueDate: this.dueDate,
+      priority: this.priority,
+      completed: this.completed,
+      projectId: this.projectId,
+      createdAt: this.createdAt,
+    };
   }
 }

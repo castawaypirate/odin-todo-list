@@ -1,6 +1,6 @@
 # backlog
 
-show/hide completed todos
+show/hide completed todos <-- we are here
 sort by priority
 sort by date
 

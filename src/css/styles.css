@@ -21,6 +21,10 @@
   #todo-id {
     display: none;
   }
+
+  #todo-createdAt {
+    display: none;
+  }
 }
 
 #project-dialog {
@@ -109,6 +113,12 @@ nav {
   padding: 1rem;
 }
 
+.project-title-icons {
+  svg:hover {
+    cursor: pointer;
+  }
+}
+
 .todo-title {
   &:hover {
     cursor: pointer;
@@ -144,9 +154,13 @@ nav {
   }
 }
 
-.hide {
+.is-invisible {
   opacity: 0;
   pointer-events: none;
+}
+
+.is-hidden {
+  display: none;
 }
 
 .dialog-button {

@@ -1,4 +1,8 @@
-import { getListFromLocalStorage } from "./localStorage.js";
+import {
+  getListFromLocalStorage,
+  getListOptionsFromLocalStorage,
+  updateListOptionsOnLocalStorage,
+} from "./localStorage.js";
 import {
   addUpdateTodoToProject,
   deleteTodo,
@@ -6,11 +10,12 @@ import {
 } from "./todoController.js";
 import { renderMain } from "./mainRenderer.js";
 import Todo from "./todo.js";
+import { icons } from "./icons.js";
 
 document.querySelector("#add-todo").addEventListener("click", () => {
   populateProjectDropdown();
   document.querySelector("#todo-form").reset();
-  document.querySelector("#delete-todo").classList.add("hide");
+  document.querySelector("#delete-todo").classList.add("is-invisible");
   document.querySelector("#todo-dialog").showModal();
 });
 
@@ -45,6 +50,7 @@ document
         formData.get("todo-priority"),
         formData.get("todo-completed"),
         formData.get("todo-project"),
+        formData.get("todo-createdAt"),
       );
     } else {
       tempTodo = new Todo(
@@ -66,30 +72,149 @@ document
     showProjectTodos(tempTodo.projectId);
   });
 
+function hideCompleted() {
+  const todoList = document.querySelector(".todo-list");
+  const todos = todoList.querySelectorAll("li");
+
+  for (let to of todos) {
+    const check = to.querySelector("input[type=checkbox]");
+    if (check.checked) {
+      to.classList.add("is-hidden");
+    } else {
+      to.classList.remove("is-hidden");
+    }
+  }
+}
+
 export function showProjectTodos(projectId) {
   const projectContent = document.createElement("div");
   const tempList = getListFromLocalStorage();
-  const listProject = tempList.find((x) => x._id === projectId);
+  const listProject = tempList.find((x) => x.id === projectId);
+
+  const projectTitleContainer = document.createElement("div");
+  projectTitleContainer.classList.add("project-title-container");
+
   const projectTitle = document.createElement("h2");
-  projectTitle.textContent = listProject._title;
+  projectTitle.textContent = listProject.title;
+  projectTitleContainer.appendChild(projectTitle);
+
+  const projectTitleIcons = document.createElement("div");
+  projectTitleIcons.classList.add("project-title-icons");
+
+  let options = getListOptionsFromLocalStorage(projectId);
+  const visibilityIcons = document.createElement("div");
+
+  if (options.visibility === "on") {
+    visibilityIcons.insertAdjacentHTML("beforeend", `${icons.visibility}`);
+  } else {
+    visibilityIcons.insertAdjacentHTML("beforeend", `${icons.visibility_off}`);
+  }
+
+  visibilityIcons.addEventListener("click", function () {
+    const todoList = document.querySelector(".todo-list");
+    const todos = todoList.querySelectorAll("li");
+
+    let icon = this.querySelector(".eye");
+
+    if (icon.id === "visibility") {
+      icon.outerHTML = icons.visibility_off;
+      for (let to of todos) {
+        const check = to.querySelector("input[type=checkbox]");
+        if (check.checked) {
+          to.classList.add("is-hidden");
+        }
+      }
+      options.visibility = "off";
+      updateListOptionsOnLocalStorage(options, projectId);
+    } else {
+      icon.outerHTML = icons.visibility;
+      for (let to of todos) {
+        const check = to.querySelector("input[type=checkbox]");
+        if (check.checked) {
+          to.classList.remove("is-hidden");
+        }
+      }
+      options.visibility = "on";
+      updateListOptionsOnLocalStorage(options, projectId);
+    }
+  });
+
+  const priorityIcons = document.createElement("div");
+
+  if (options.priority === "on") {
+    priorityIcons.insertAdjacentHTML("beforeend", `${icons.filter}`);
+  } else {
+    priorityIcons.insertAdjacentHTML("beforeend", `${icons.filter_off}`);
+  }
+
+  priorityIcons.addEventListener("click", function () {
+    let icon = this.querySelector(".filter");
+
+    if (icon.id === "priority") {
+      icon.outerHTML = icons.filter_off;
+
+      options.priority = "off";
+      updateListOptionsOnLocalStorage(options, projectId);
+    } else {
+      icon.outerHTML = icons.filter;
+
+      options.priority = "on";
+      updateListOptionsOnLocalStorage(options, projectId);
+    }
+  });
+
+  const dueDateIcons = document.createElement("div");
+
+  if (options.dueDate === "on") {
+    dueDateIcons.insertAdjacentHTML("beforeend", `${icons.timer}`);
+  } else {
+    dueDateIcons.insertAdjacentHTML("beforeend", `${icons.timer_off}`);
+  }
+
+  dueDateIcons.addEventListener("click", function () {
+    let icon = this.querySelector(".timer");
+
+    if (icon.id === "due_date") {
+      icon.outerHTML = icons.timer_off;
+      options.dueDate = "off";
+      updateListOptionsOnLocalStorage(options, projectId);
+    } else {
+      icon.outerHTML = icons.timer;
+      options.dueDate = "on";
+      updateListOptionsOnLocalStorage(options, projectId);
+    }
+  });
+
+  projectTitleIcons.appendChild(visibilityIcons);
+  projectTitleIcons.appendChild(priorityIcons);
+  projectTitleIcons.appendChild(dueDateIcons);
+
+  projectTitleContainer.appendChild(projectTitleIcons);
 
   const todoList = document.createElement("ul");
-  for (let todo of listProject._todos) {
+  todoList.classList.add("todo-list");
+
+  // sort from the newest todo to latest
+  listProject.todos.sort(function (a, b) {
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
+
+  for (let todo of listProject.todos) {
     const el = document.createElement("li");
 
     const upper = document.createElement("div");
     const check = document.createElement("input");
     check.type = "checkbox";
-    if (todo._completed) {
+    if (todo.completed) {
       check.checked = true;
     }
     check.addEventListener("change", function () {
       completeTodo(todo);
-      showProjectTodos(todo._projectId);
+      showProjectTodos(todo.projectId);
     });
     const title = document.createElement("span");
     title.classList.add("todo-title");
-    title.textContent = todo._title;
+    title.textContent = todo.title;
 
     title.addEventListener("click", function () {
       const todoForm = document.querySelector("#todo-form");
@@ -98,7 +223,7 @@ export function showProjectTodos(projectId) {
       const pairs = Object.entries(todo);
 
       for (let [key, value] of pairs) {
-        let field = todoForm.querySelector(`#todo-${key.slice(1)}`);
+        let field = todoForm.querySelector(`#todo-${key}`);
         if (field) {
           if (field.type === "checkbox") {
             if (value === "completed") {
@@ -108,12 +233,12 @@ export function showProjectTodos(projectId) {
             field.value = value;
           }
         }
-        if (key === "_projectId") {
+        if (key === "projectId") {
           todoForm.querySelector("#todo-project").value = value;
         }
       }
 
-      document.querySelector("#delete-todo").classList.remove("hide");
+      document.querySelector("#delete-todo").classList.remove("is-invisible");
       document.querySelector("#todo-dialog").showModal();
     });
 
@@ -121,13 +246,13 @@ export function showProjectTodos(projectId) {
     upper.appendChild(title);
 
     const lower = document.createElement("div");
-    if (todo._dueDate) {
+    if (todo.dueDate) {
       const dueDate = document.createElement("span");
-      dueDate.textContent = todo._dueDate;
+      dueDate.textContent = todo.dueDate;
       lower.appendChild(dueDate);
     }
 
-    const todoPriority = todo._priority;
+    const todoPriority = todo.priority;
     if (todoPriority) {
       if (todoPriority === "low") {
         lower.insertAdjacentHTML(
@@ -158,9 +283,12 @@ export function showProjectTodos(projectId) {
     todoList.appendChild(el);
   }
 
-  projectContent.appendChild(projectTitle);
+  projectContent.appendChild(projectTitleContainer);
   projectContent.appendChild(todoList);
   renderMain(projectContent);
+  if (options.visibility === "off") {
+    hideCompleted();
+  }
 }
 
 function populateProjectDropdown() {
@@ -169,9 +297,9 @@ function populateProjectDropdown() {
   const tempList = getListFromLocalStorage();
   for (let project of tempList) {
     let el = document.createElement("option");
-    el.textContent = project._title;
-    el.dataset.uuid = project._id;
-    el.value = project._id;
+    el.textContent = project.title;
+    el.dataset.uuid = project.id;
+    el.value = project.id;
     select.appendChild(el);
   }
 }

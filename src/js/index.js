@@ -1,7 +1,9 @@
 import "../css/styles.css";
 import {
   getListFromLocalStorage,
+  getListOptionsFromLocalStorage,
   updateListOnLocalStorage,
+  updateListOptionsOnLocalStorage,
 } from "./localStorage.js";
 import { showProjectsNav } from "./projectView.js";
 import { showProjectTodos } from "./todoView.js";
@@ -17,6 +19,18 @@ function initView() {
     tempList.push(defaultProject);
     updateListOnLocalStorage(tempList);
   }
+
+  let tempListOptions = getListOptionsFromLocalStorage(defaultProjectId);
+  if (!tempListOptions) {
+    let defaultProjectOptions = {
+      visibility: "on",
+      priority: "off",
+      dueDate: "off",
+    };
+
+    updateListOptionsOnLocalStorage(defaultProjectOptions, defaultProjectId);
+  }
+
   showProjectTodos(defaultProjectId);
   showProjectsNav();
 }

@@ -1,4 +1,8 @@
-import { getListFromLocalStorage } from "./localStorage.js";
+import {
+  getListFromLocalStorage,
+  getListOptionsFromLocalStorage,
+  updateListOptionsOnLocalStorage,
+} from "./localStorage.js";
 import { showProjectTodos } from "./todoView.js";
 import { deleteProject, addUpdateProjectToList } from "./projectController.js";
 import { renderMain } from "./mainRenderer.js";
@@ -23,12 +27,12 @@ document
     if (formData.get("project-id")) {
       let tempList = getListFromLocalStorage();
       const listProject = tempList.find(
-        (x) => x._id === formData.get("project-id"),
+        (x) => x.id === formData.get("project-id"),
       );
       tempProj = new Project(
         formData.get("project-id"),
         formData.get("project-title"),
-        listProject._todos,
+        listProject.todos,
       );
     } else {
       tempProj = new Project(
@@ -36,6 +40,17 @@ document
         formData.get("project-title"),
         [],
       );
+
+      let tempListOptions = getListOptionsFromLocalStorage(tempProj.id);
+      if (!tempListOptions) {
+        let tempProjectOptions = {
+          visibility: "on",
+          priority: "off",
+          dueDate: "off",
+        };
+
+        updateListOptionsOnLocalStorage(tempProjectOptions, tempProj.id);
+      }
     }
 
     addUpdateProjectToList(tempProj);
@@ -58,33 +73,35 @@ function showProjects() {
   for (let project of tempList) {
     const el = document.createElement("li");
     const title = document.createElement("span");
-    title.textContent = project._title;
+    title.textContent = project.title;
     title.addEventListener("click", function () {
-      showProjectTodos(project._id);
+      showProjectTodos(project.id);
     });
 
     el.appendChild(title);
-    el.dataset.uuid = project._id;
+    el.dataset.uuid = project.id;
     // default project cannot be deleted
-    if (project._id !== defaultProjectId) {
+    if (project.id !== defaultProjectId) {
       el.insertAdjacentHTML(
         "beforeend",
-        `<svg class="hide edit" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>`,
+        `<svg class="is-invisible edit" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>`,
       );
 
       el.insertAdjacentHTML(
         "beforeend",
-        `<svg class="hide delete" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>`,
+        `<svg class="is-invisible delete" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>`,
       );
 
       el.addEventListener("mouseover", function () {
         this.querySelectorAll("svg").forEach((el) =>
-          el.classList.remove("hide"),
+          el.classList.remove("is-invisible"),
         );
       });
 
       el.addEventListener("mouseout", function () {
-        this.querySelectorAll("svg").forEach((el) => el.classList.add("hide"));
+        this.querySelectorAll("svg").forEach((el) =>
+          el.classList.add("is-invisible"),
+        );
       });
 
       el.querySelector(".edit").addEventListener("click", function () {
@@ -93,7 +110,7 @@ function showProjects() {
         const pairs = Object.entries(project);
 
         for (let [key, value] of pairs) {
-          let field = projectForm.querySelector(`#project-${key.slice(1)}`);
+          let field = projectForm.querySelector(`#project-${key}`);
           if (field) {
             field.value = value;
           }
@@ -103,7 +120,7 @@ function showProjects() {
       });
 
       el.querySelector(".delete").addEventListener("click", function () {
-        deleteProject(project._id);
+        deleteProject(project.id);
         showProjects();
         showProjectsNav();
       });
@@ -126,10 +143,10 @@ export function showProjectsNav() {
   navProjectList.innerHTML = "";
   for (let project of tempList) {
     const el = document.createElement("li");
-    el.textContent = project._title;
-    el.dataset.uuid = project._id;
+    el.textContent = project.title;
+    el.dataset.uuid = project.id;
     el.addEventListener("click", function () {
-      showProjectTodos(project._id);
+      showProjectTodos(project.id);
     });
     navProjectList.appendChild(el);
   }
