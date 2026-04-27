@@ -114,8 +114,23 @@ nav {
 }
 
 .project-title-icons {
-  svg:hover {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+
+  div:hover {
     cursor: pointer;
+  }
+}
+
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  li {
+    flex: 1;
+    border: 1px solid black;
   }
 }
 

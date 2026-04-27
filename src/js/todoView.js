@@ -103,6 +103,7 @@ export function showProjectTodos(projectId) {
 
   let options = getListOptionsFromLocalStorage(projectId);
   const visibilityIcons = document.createElement("div");
+  visibilityIcons.title = "show/hide completed todos";
 
   if (options.visibility === "on") {
     visibilityIcons.insertAdjacentHTML("beforeend", `${icons.visibility}`);
@@ -140,6 +141,7 @@ export function showProjectTodos(projectId) {
   });
 
   const priorityIcons = document.createElement("div");
+  priorityIcons.title = "sort by priority";
 
   if (options.priority === "on") {
     priorityIcons.insertAdjacentHTML("beforeend", `${icons.filter}`);
@@ -149,21 +151,24 @@ export function showProjectTodos(projectId) {
 
   priorityIcons.addEventListener("click", function () {
     let icon = this.querySelector(".filter");
-
     if (icon.id === "priority") {
       icon.outerHTML = icons.filter_off;
-
       options.priority = "off";
+      options.lastTurnedOn = "";
       updateListOptionsOnLocalStorage(options, projectId);
     } else {
+      if (options.dueDate === "on") {
+        options.lastTurnedOn = "prio";
+      }
       icon.outerHTML = icons.filter;
-
       options.priority = "on";
       updateListOptionsOnLocalStorage(options, projectId);
     }
+    showProjectTodos(projectId);
   });
 
   const dueDateIcons = document.createElement("div");
+  dueDateIcons.title = "sort by due date";
 
   if (options.dueDate === "on") {
     dueDateIcons.insertAdjacentHTML("beforeend", `${icons.timer}`);
@@ -173,16 +178,21 @@ export function showProjectTodos(projectId) {
 
   dueDateIcons.addEventListener("click", function () {
     let icon = this.querySelector(".timer");
-
     if (icon.id === "due_date") {
       icon.outerHTML = icons.timer_off;
       options.dueDate = "off";
+
+      options.lastTurnedOn = "";
       updateListOptionsOnLocalStorage(options, projectId);
     } else {
+      if (options.priority === "on") {
+        options.lastTurnedOn = "due";
+      }
       icon.outerHTML = icons.timer;
       options.dueDate = "on";
       updateListOptionsOnLocalStorage(options, projectId);
     }
+    showProjectTodos(projectId);
   });
 
   projectTitleIcons.appendChild(visibilityIcons);
@@ -194,10 +204,7 @@ export function showProjectTodos(projectId) {
   const todoList = document.createElement("ul");
   todoList.classList.add("todo-list");
 
-  // sort from the newest todo to latest
-  listProject.todos.sort(function (a, b) {
-    return new Date(b.createdAt) - new Date(a.createdAt);
-  });
+  listProject.todos = applyFilters(options, listProject.todos);
 
   for (let todo of listProject.todos) {
     const el = document.createElement("li");
@@ -253,13 +260,13 @@ export function showProjectTodos(projectId) {
     }
 
     const todoPriority = todo.priority;
-    if (todoPriority) {
-      if (todoPriority === "low") {
+    if (todoPriority !== "0") {
+      if (todoPriority === "1") {
         lower.insertAdjacentHTML(
           "beforeend",
           `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-200 240-440l56-56 184 183 184-183 56 56-240 240Zm0-240L240-680l56-56 184 183 184-183 56 56-240 240Z"/></svg>`,
         );
-      } else if (todoPriority === "medium") {
+      } else if (todoPriority === "2") {
         lower.insertAdjacentHTML(
           "beforeend",
           `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M160-440v-80h640v80H160Z"/></svg>`,
@@ -302,4 +309,70 @@ function populateProjectDropdown() {
     el.value = project.id;
     select.appendChild(el);
   }
+}
+
+// The idea is that the first filter applied persists, and the second filter acts as a complement to the already sorted list.
+// So, applying both the due date and priority filters in a different order displays different results.
+function applyFilters(opts, list) {
+  if (opts.lastTurnedOn === "prio") {
+    console.log("lastTurnedOn: prio");
+    list.sort(function (a, b) {
+      return new Date(a.dueDate) - new Date(b.dueDate);
+    });
+    const grouped = Object.groupBy(list, ({ dueDate }) => dueDate);
+
+    list = nestedPrioritySort(Object.values(grouped).reverse());
+  } else if (opts.lastTurnedOn === "due") {
+    console.log("lastTurnedOn: due");
+    const grouped = Object.groupBy(list, ({ priority }) => priority);
+    list = nestedDueDateSort(Object.values(grouped));
+  } else {
+    if (opts.priority === "on") {
+      console.log("sort by priority");
+      const grouped = Object.groupBy(list, ({ priority }) => priority);
+      list = nestedCreatedAtSort(Object.values(grouped));
+    } else if (opts.dueDate === "on") {
+      console.log("sort by due date");
+      list.sort(function (a, b) {
+        return new Date(a.dueDate) - new Date(b.dueDate);
+      });
+      const grouped = Object.groupBy(list, ({ dueDate }) => dueDate);
+      list = nestedCreatedAtSort(Object.values(grouped).reverse());
+    } else {
+      console.log("no filter");
+      list.sort(function (a, b) {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      });
+    }
+  }
+  return list;
+}
+
+function nestedCreatedAtSort(list) {
+  let newList = [];
+  for (let el of list) {
+    el.sort(function (a, b) {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+    newList.unshift(...el);
+  }
+  return newList;
+}
+
+function nestedPrioritySort(list) {
+  let newList = [];
+  for (let el of list) {
+    const grouped = Object.groupBy(el, ({ priority }) => priority);
+    newList.unshift(...nestedCreatedAtSort(Object.values(grouped)));
+  }
+  return newList;
+}
+
+function nestedDueDateSort(list) {
+  let newList = [];
+  for (let el of list) {
+    const grouped = Object.groupBy(el, ({ dueDate }) => dueDate);
+    newList.unshift(...nestedCreatedAtSort(Object.values(grouped)));
+  }
+  return newList;
 }
