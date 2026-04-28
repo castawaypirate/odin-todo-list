@@ -210,6 +210,7 @@ export function showProjectTodos(projectId) {
     const el = document.createElement("li");
 
     const upper = document.createElement("div");
+    upper.classList.add("upper");
     const check = document.createElement("input");
     check.type = "checkbox";
     if (todo.completed) {
@@ -219,11 +220,14 @@ export function showProjectTodos(projectId) {
       completeTodo(todo);
       showProjectTodos(todo.projectId);
     });
-    const title = document.createElement("span");
+    const title = document.createElement("h4");
     title.classList.add("todo-title");
     title.textContent = todo.title;
 
-    title.addEventListener("click", function () {
+    el.addEventListener("click", function (e) {
+      if (e.target.type === "checkbox") {
+        return;
+      }
       const todoForm = document.querySelector("#todo-form");
       populateProjectDropdown();
       todoForm.reset();
@@ -253,6 +257,7 @@ export function showProjectTodos(projectId) {
     upper.appendChild(title);
 
     const lower = document.createElement("div");
+    lower.classList.add("lower");
     if (todo.dueDate) {
       const dueDate = document.createElement("span");
       dueDate.textContent = todo.dueDate;

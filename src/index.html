@@ -9,164 +9,175 @@
   <body>
     <div class="container">
       <dialog id="todo-dialog">
-        <button class="dialog-button" id="close-todo-dialog">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#e3e3e3"
-          >
-            <path
-              d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
-            />
-          </svg>
-        </button>
-        <form id="todo-form">
-          <input type="text" id="todo-id" name="todo-id" value="" readonly />
-          <div class="form-field">
-            <label for="todo-title">Title</label>
+        <div class="todo-dialog-container">
+          <button class="dialog-button" id="close-todo-dialog">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#e3e3e3"
+            >
+              <path
+                d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
+              />
+            </svg>
+          </button>
+          <form id="todo-form">
+            <input type="text" id="todo-id" name="todo-id" value="" readonly />
+            <div class="form-field">
+              <label for="todo-title">Title</label>
+              <input
+                type="text"
+                id="todo-title"
+                name="todo-title"
+                value=""
+                required
+                autofocus
+              />
+            </div>
+            <div class="form-field">
+              <label for="todo-description">Description</label>
+              <textarea
+                id="todo-description"
+                name="todo-description"
+                value=""
+                rows="3"
+              ></textarea>
+            </div>
+            <div class="form-field">
+              <label for="todo-dueDate">Due Date</label>
+              <input
+                type="date"
+                id="todo-dueDate"
+                name="todo-dueDate"
+                value=""
+              />
+            </div>
+            <div class="form-field">
+              <label for="todo-priority">Priority</label>
+              <select id="todo-priority" name="todo-priority">
+                <option value="0">--Please choose priority--</option>
+                <option value="1">Low</option>
+                <option value="2">Medium</option>
+                <option value="3">High</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="todo-completed">Completed</label>
+              <input
+                type="checkbox"
+                id="todo-completed"
+                name="todo-completed"
+                value="completed"
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="todo-project">Project</label>
+              <select id="todo-project" name="todo-project"></select>
+            </div>
+
             <input
               type="text"
-              id="todo-title"
-              name="todo-title"
+              id="todo-createdAt"
+              name="todo-createdAt"
               value=""
-              required
-              autofocus
+              readonly
             />
+          </form>
+          <div class="form-control-buttons">
+            <button
+              class="dialog-button"
+              type="submit"
+              id="submit-todo"
+              form="todo-form"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#e3e3e3"
+              >
+                <path
+                  d="M840-680v480q0 33-23.5 56.5T760-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h480l160 160Zm-80 34L646-760H200v560h560v-446ZM565-275q35-35 35-85t-35-85q-35-35-85-35t-85 35q-35 35-35 85t35 85q35 35 85 35t85-35ZM240-560h360v-160H240v160Zm-40-86v446-560 114Z"
+                />
+              </svg>
+            </button>
+            <button class="dialog-button" type="button" id="delete-todo">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#e3e3e3"
+              >
+                <path
+                  d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"
+                />
+              </svg>
+            </button>
           </div>
-          <div class="form-field">
-            <label for="todo-description">Description</label>
-            <textarea
-              id="todo-description"
-              name="todo-description"
-              value=""
-              rows="3"
-            ></textarea>
-          </div>
-          <div class="form-field">
-            <label for="todo-dueDate">Due Date</label>
-            <input type="date" id="todo-dueDate" name="todo-dueDate" value="" />
-          </div>
-          <div class="form-field">
-            <label for="todo-priority">Priority</label>
-            <select id="todo-priority" name="todo-priority">
-              <option value="0">--Please choose priority--</option>
-              <option value="1">Low</option>
-              <option value="2">Medium</option>
-              <option value="3">High</option>
-            </select>
-          </div>
-
-          <div class="form-field">
-            <label for="todo-completed">Completed</label>
-            <input
-              type="checkbox"
-              id="todo-completed"
-              name="todo-completed"
-              value="completed"
-            />
-          </div>
-
-          <div class="form-field">
-            <label for="todo-project">Project</label>
-            <select id="todo-project" name="todo-project"></select>
-          </div>
-
-          <input
-            type="text"
-            id="todo-createdAt"
-            name="todo-createdAt"
-            value=""
-            readonly
-          />
-        </form>
-        <button
-          class="dialog-button"
-          type="submit"
-          id="submit-todo"
-          form="todo-form"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#e3e3e3"
-          >
-            <path
-              d="M840-680v480q0 33-23.5 56.5T760-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h480l160 160Zm-80 34L646-760H200v560h560v-446ZM565-275q35-35 35-85t-35-85q-35-35-85-35t-85 35q-35 35-35 85t35 85q35 35 85 35t85-35ZM240-560h360v-160H240v160Zm-40-86v446-560 114Z"
-            />
-          </svg>
-        </button>
-        <button class="dialog-button" type="button" id="delete-todo">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#e3e3e3"
-          >
-            <path
-              d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"
-            />
-          </svg>
-        </button>
+        </div>
       </dialog>
 
       <dialog id="project-dialog">
-        <button class="dialog-button" id="close-project-dialog">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#e3e3e3"
-          >
-            <path
-              d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
-            />
-          </svg>
-        </button>
-        <form id="project-form">
-          <input
-            type="text"
-            id="project-id"
-            name="project-id"
-            value=""
-            readonly
-          />
-          <div class="form-field">
-            <label for="project-title">Title</label>
+        <div class="project-dialog-container">
+          <button class="dialog-button" id="close-project-dialog">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#e3e3e3"
+            >
+              <path
+                d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
+              />
+            </svg>
+          </button>
+          <form id="project-form">
             <input
               type="text"
-              id="project-title"
-              name="project-title"
+              id="project-id"
+              name="project-id"
               value=""
-              required
-              autofocus
+              readonly
             />
-          </div>
-        </form>
+            <div class="form-field">
+              <label for="project-title">Title</label>
+              <input
+                type="text"
+                id="project-title"
+                name="project-title"
+                value=""
+                required
+                autofocus
+              />
+            </div>
+          </form>
 
-        <button
-          class="dialog-button"
-          type="submit"
-          id="submit-project"
-          form="project-form"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#e3e3e3"
+          <button
+            class="dialog-button"
+            type="submit"
+            id="submit-project"
+            form="project-form"
           >
-            <path
-              d="M840-680v480q0 33-23.5 56.5T760-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h480l160 160Zm-80 34L646-760H200v560h560v-446ZM565-275q35-35 35-85t-35-85q-35-35-85-35t-85 35q-35 35-35 85t35 85q35 35 85 35t85-35ZM240-560h360v-160H240v160Zm-40-86v446-560 114Z"
-            />
-          </svg>
-        </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#e3e3e3"
+            >
+              <path
+                d="M840-680v480q0 33-23.5 56.5T760-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h480l160 160Zm-80 34L646-760H200v560h560v-446ZM565-275q35-35 35-85t-35-85q-35-35-85-35t-85 35q-35 35-35 85t35 85q35 35 85 35t85-35ZM240-560h360v-160H240v160Zm-40-86v446-560 114Z"
+              />
+            </svg>
+          </button>
+        </div>
       </dialog>
 
       <button class="toggle" type="button">

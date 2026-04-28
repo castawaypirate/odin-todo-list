@@ -14,7 +14,7 @@ export const defaultProjectId = "47becbd0-3a1c-4ab4-80f6-bbc81a2e2d24";
 function initView() {
   let tempList = getListFromLocalStorage();
   if (!tempList) {
-    const defaultProject = new Project(defaultProjectId, "Default", []);
+    const defaultProject = new Project(defaultProjectId, "default", []);
     tempList = [];
     tempList.push(defaultProject);
     updateListOnLocalStorage(tempList);
